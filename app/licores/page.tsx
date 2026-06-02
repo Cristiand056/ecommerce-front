@@ -37,6 +37,16 @@ export default function AccessoriesPage() {
 
   const filters = [
     {
+      name: "Categoría",
+      options: [
+        "Licores", 
+        "Cigarrillos",
+        "Dulces",
+        "Delicatessen()",
+        "Otros"
+      ]
+    },
+    {
       name: "Marca",
       options: [
         "Aguardiente Antioqueño", 
@@ -59,72 +69,96 @@ export default function AccessoriesPage() {
       {
         id: 1,
         name: "Aguardiente Antioqueño Tapa Azul 750ml",
+        category: "Licores",
+        brand: "Aguardiente Antioqueño",
         price: 45000,
         imageSrc: "/placeholder.svg?height=300&width=300&text=Guaro-Azul",
       },
       {
         id: 2,
         name: "Ron Viejo de Caldas Juan de la Cruz 5 Años 750ml",
+        category: "Licores",
+        brand: "Ron Viejo de Caldas",
         price: 62000,
         imageSrc: "/placeholder.svg?height=300&width=300&text=Ron-Caldas",
       },
       {
         id: 3,
         name: "Aguardiente Néctar Club Sin Azúcar 750ml",
+        category: "Licores",
+        brand: "Aguardiente Néctar",
         price: 42000,
         imageSrc: "/placeholder.svg?height=300&width=300&text=Nectar-Club",
       },
       {
         id: 4,
         name: "Ron Medellín Añejo 3 Años 750ml",
+        category: "Licores",
+        brand: "Ron Medellín",
         price: 52000,
         imageSrc: "/placeholder.svg?height=300&width=300&text=Ron-Medellin",
       },
       {
         id: 5,
         name: "Cerveza Club Colombia Dorada (6 Pack Lata)",
+        category: "Licores",
+        brand: "Club Colombia",
         price: 18000,
         imageSrc: "/placeholder.svg?height=300&width=300&text=Club-Dorada",
       },
       {
         id: 6,
         name: "Cerveza Águila Original (6 Pack Lata)",
+        category: "Licores",
+        brand: "Águila",
         price: 15000,
         imageSrc: "/placeholder.svg?height=300&width=300&text=Aguila-Original",
       },
       {
         id: 7,
         name: "Cerveza Poker (6 Pack Lata)",
+        category: "Licores",
+        brand: "Poker",
         price: 14500,
         imageSrc: "/placeholder.svg?height=300&width=300&text=Cerveza-Poker",
       },
       {
         id: 8,
         name: "Whisky Johnnie Walker Black Label 750ml",
+        category: "Licores",
+        brand: "Johnnie Walker",
         price: 140000,
         imageSrc: "/placeholder.svg?height=300&width=300&text=Black-Label",
       },
       {
         id: 9,
         name: "Tequila José Cuervo Especial Reposado 750ml",
+        category: "Licores",
+        brand: "José Cuervo",
         price: 95000,
         imageSrc: "/placeholder.svg?height=300&width=300&text=Jose-Cuervo",
       },
       {
         id: 10,
         name: "Cigarrillos Mustang Paquete x20",
+        category: "Cigarrillos",
+        brand: "Mustang",
         price: 7500,
         imageSrc: "/placeholder.svg?height=300&width=300&text=Mustang",
       },
       {
         id: 11,
         name: "Cigarrillos Marlboro Red Paquete x20",
+        category: "Cigarrillos",
+        brand: "Marlboro",
         price: 11000,
         imageSrc: "/placeholder.svg?height=300&width=300&text=Marlboro-Red",
       },
       {
         id: 12,
         name: "Aguardiente Blanco del Valle Sin Azúcar 750ml",
+        category: "Licores",
+        brand: "Aguardiente Blanco",
         price: 44000,
         imageSrc: "/placeholder.svg?height=300&width=300&text=Blanco-Del-Valle",
       },
