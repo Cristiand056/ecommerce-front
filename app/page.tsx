@@ -6,9 +6,9 @@ import FindUs from "@/components/findUs"
 
 export default function Home() {
   return (
-    <main className="flex flex-col min-h-screen">
+    <main className="flex flex-col min-h-screen gap-12 md:gap-16 pb-16">
       {/*Hero Section*/}
-      <section className="py-12 md:py-16">
+      <section className="pt-8 md:pt-12">
         <div className="container px-4 md:px-16 max-w-5xl mx-auto">
           <div className="flex flex-col items-center text-center mb-8">
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">Bienvenido a La <span className="bg-yellow-300 px-1">Distribuidora X</span></h1>
@@ -18,15 +18,15 @@ export default function Home() {
           </div>
         </div>
         {/*Imagen hero*/}
-        <div className="md:col-span-6 relative">
+        <div className="container px-4 md:px-16 max-w-5xl mx-auto relative">
               <Image
-                src="/placeholder.svg?height=600&width=800"
+                src="/placeholder.svg"
                 width={800}
-                height={600}
+                height={450}
                 alt="banner principal"
                 className="rounded-lg object-cover w-full"
               />
-            </div>
+        </div>
       </section>
 
       {/*Sección de productos en promoción*/}
@@ -37,7 +37,7 @@ export default function Home() {
 
       {/*Sección geo-localización*/}
       <section className="container px-4 md:px-16 max-w-5xl mx-auto">
-        /*<FindUs />*/
+        <FindUs />
       </section>
 
     </main>
