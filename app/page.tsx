@@ -2,7 +2,10 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import PromoSlider from "@/components/promoSlider"
-import FindUs from "@/components/findUs"
+import MapWapper from "@/components/map-wapper"
+/*import FindUs from "@/components/findUs"*/
+
+
 
 export default function Home() {
   return (
@@ -37,7 +40,7 @@ export default function Home() {
 
       {/*Sección geo-localización*/}
       <section className="container px-4 md:px-16 max-w-5xl mx-auto">
-        <FindUs />
+        <MapWapper />
       </section>
 
     </main>
