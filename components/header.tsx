@@ -31,8 +31,8 @@ export function Header(){
                 </div>
                 <nav className="hidden md:flex items center space-x-8">
                     <Link href="/" className="text-sm font-medium transition-color hover:text-primary">Inicio</Link>
-                    <Link href="/" className="text-sm font-medium transition-color hover:text-primary">Catálogo</Link>
-                    <Link href="/" className="text-sm font-medium transition-color hover:text-primary">Pedido Especial</Link>
+                    <Link href="/catalogo" className="text-sm font-medium transition-color hover:text-primary">Catálogo</Link>
+                    <Link href="/pedido-especial" className="text-sm font-medium transition-color hover:text-primary">Pedido Especial</Link>
                     <Link href="/" className="text-sm font-medium transition-color hover:text-primary">Ayuda</Link>
                     <Link href="/" className="text-sm font-medium transition-color hover:text-primary">Ingresar/Registarse</Link>
 
@@ -53,14 +53,14 @@ export function Header(){
                     Inicio
                   </Link>
                   <Link 
-                    href="/" 
+                    href="/catalogo" 
                     onClick={() => setIsMenuOpen(false)} 
                     className="text-sm font-medium py-2 border-b transition-colors hover:text-primary"
                   >
                     Catálogo
                   </Link>
                   <Link 
-                    href="/" 
+                    href="/pedido-especial" 
                     onClick={() => setIsMenuOpen(false)} 
                     className="text-sm font-medium py-2 border-b transition-colors hover:text-primary"
                   >
