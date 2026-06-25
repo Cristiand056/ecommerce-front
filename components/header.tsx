@@ -3,6 +3,7 @@
 import Link from "next/link"  
 import { useState } from "react"
 import { ShoppingCart, Menu, X, User, Package } from "lucide-react"
+import {useUser, UserButton} from "@clerk/nextjs"
 
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
@@ -10,6 +11,7 @@ import { Input } from "./ui/input"
 export function Header(){
     "Logica del negocio"
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const {isSignedIn, isLoaded} = useUser();
 
     return (
         <header className="w-full p-4 items">
@@ -34,7 +36,40 @@ export function Header(){
                     <Link href="/catalogo" className="text-sm font-medium transition-color hover:text-primary">Catálogo</Link>
                     <Link href="/pedido-especial" className="text-sm font-medium transition-color hover:text-primary">Pedido Especial</Link>
                     <Link href="/" className="text-sm font-medium transition-color hover:text-primary">Ayuda</Link>
-                    <Link href="/" className="text-sm font-medium transition-color hover:text-primary">Ingresar/Registarse</Link>
+                    
+                    {/*Inicio de sesión*/}
+                    {isLoaded && !isSignedIn ? (
+                    <Button variant="ghost" size="icon" className="hidden md:flex asChild">
+                      <Link href="/sign-in">
+                        <User className="h-5 w-5" />
+                        <span className="sr-only">Iniciar Sesión</span>
+                      </Link>
+                    </Button>
+                    ) : null}
+
+                    {isLoaded && isSignedIn && (
+                      <>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="hidden md:flex"
+                        asChild
+                      >
+                        <Link href="/mi-cuenta">
+                          <Package className="h-5 w-5" />
+                          <span className="sr-only">Mis Pedidos</span>
+                        </Link>
+                      </Button>
+                      
+                      <UserButton
+                        appearance={{
+                          elements: {
+                            avatarBox: "w-8 h-8 rounded-full"
+                          },
+                        }}
+                      />
+                      </>
+                    )}
 
                     <Button variant="outline" size="icon" className="relative rounded-full">
                         <ShoppingCart className="h-5 w-5" />
