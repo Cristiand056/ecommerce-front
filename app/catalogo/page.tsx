@@ -44,8 +44,8 @@ export default function CatalogoPage() {
         "Ginebra",
         "Aperitivos",
         "Cigarrillos x paquete",
-        "Cohoclates",
-        "Entaltados",
+        "Chocolates",
+        "Enlatados",
         "Otros"
       ]
     },
