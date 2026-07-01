@@ -21,28 +21,31 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ProductCard } from "@/components/product-card";
 
 //Categorias
-export default function AccessoriesPage() {
+export default function CatalogoPage() {
   // En una implementación real, estos datos vendrían de Strapi
   const categories = [
-    { name: "Whisky", count: 12 },
-    { name: "Vodka", count: 8 },
-    { name: "Cerveza", count: 6 },
-    { name: "Vino", count: 6 },
-    { name: "Aguardiente", count: 7 },
-    { name: "Ron", count: 11 },
-    { name: "Tequila", count: 10 },
-    { name: "Ginebra", count: 12 },
-    { name: "Otros", count: 8 }
+    { name: "Licores", count: 12 },
+    { name: "Cigarrillos", count: 8 },
+    { name: "Dulces", count: 6 },
+    { name: "Delicatessen", count: 6 },
   ];
 
   const filters = [
     {
-      name: "Categoría",
+      name: "SubCategoría",
       options: [
-        "Licores", 
-        "Cigarrillos",
-        "Dulces",
-        "Delicatessen()",
+        "Whisky",
+        "Vodka",
+        "Cerveza",
+        "Vino",
+        "Aguardiente",
+        "Ron",
+        "Tequila",
+        "Ginebra",
+        "Aperitivos",
+        "Cigarrillos x paquete",
+        "Cohoclates",
+        "Entaltados",
         "Otros"
       ]
     },
@@ -190,7 +193,7 @@ return (
             Inicio
           </Link>
           <ChevronRight className="h-4 w-4 mx-2" />
-          <span className="text-gray-900 font-medium">Licores</span>
+          <span className="text-gray-900 font-medium">Catálogo</span>
         </nav>
       </div>
 
