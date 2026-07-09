@@ -1,11 +1,14 @@
+// app/producto/[slug]/page.tsx
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight, Heart, Minus, Plus } from "lucide-react";
+import { notFound } from "next/navigation";
+import { ChevronRight, Heart } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { QuantitySelector } from "@/components/quantity-selector";
+import { getProducts, getStrapiMedia } from "@/lib/strapi";
 
-// Interfaz para tipar los parámetros de la URL
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
@@ -13,15 +16,20 @@ interface ProductPageProps {
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
 
-  // En una fase posterior, estos datos se consultarán en Strapi usando el slug
+  const prod = await getProducts({ slug });
+
+  if (!prod) {
+    notFound();
+  }
+
   const product = {
-    title: "Whisky Johnnie Walker Black Label 750ml",
-    price: 140000,
-    imageSrc: "/placeholder.svg?height=600&width=500&text=Black-Label", 
-    description: "Johnnie Walker Black Label es un whisky escocés de mezcla verdaderamente icónico, reconocido como el referente para todas las demás mezclas de lujo. Creado a partir de whiskies envejecidos durante un mínimo de 12 años en los cuatro rincones de Escocia, tiene un perfil de sabor complejo, ahumado y suave a la vez.",
+    title: prod.name || "Producto sin nombre",
+    price: prod.price || 0,
+    stock: prod.stock ?? 0, // ✅ nuevo
+    imageSrc: getStrapiMedia(prod.image),
+    description: prod.description || "Sin descripción disponible.",
   };
 
-  // formateador para pesos colombianos (COP)
   const formatPrice = (value: number) => {
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
@@ -30,11 +38,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
     }).format(value);
   };
 
+  const outOfStock = product.stock <= 0;
+
   return (
     <main className="min-h-screen bg-[#FDF5E6] py-8 px-4 md:px-6">
       <div className="container max-w-5xl mx-auto">
         
-        {/* Breadcrumb idéntico al de la imagen image_9c43a4.png */}
         <nav className="flex items-center text-sm font-bold text-gray-800 mb-6">
           <Link href="/" className="hover:underline">Home</Link>
           <ChevronRight className="h-4 w-4 mx-1" />
@@ -45,10 +54,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </span>
         </nav>
 
-        {/* Contenedor Principal de Dos Columnas */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
           
-          {/* Columna Izquierda: Imagen e Información de Seguridad */}
           <div className="flex flex-col gap-6">
             <div className="relative aspect-[4/5] w-full rounded-md overflow-hidden bg-white shadow-sm border border-orange-100">
               <Image
@@ -60,7 +67,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
               />
             </div>
 
-            {/* Información de Pago y Seguridad */}
             <div className="text-xs text-gray-900 space-y-2 leading-relaxed font-medium">
               <p className="font-bold text-sm">Pago y seguridad</p>
               <p className="font-bold">Métodos de pago</p>
@@ -76,7 +82,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
           </div>
 
-          {/* Columna Derecha: Detalles del producto y Acciones */}
           <div className="flex flex-col">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
               {product.title}
@@ -86,11 +91,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
               {formatPrice(product.price)}
             </p>
 
-            <p className="text-xs text-gray-700 font-semibold mb-6">
-              Tax included Shipping calculated at checkout.
+            {/* ✅ Indicador de stock */}
+            <p className={`text-xs font-semibold mb-6 ${outOfStock ? "text-red-600" : "text-gray-700"}`}>
+              {outOfStock
+                ? "Producto agotado"
+                : `${product.stock} unidades disponibles · Tax included`}
             </p>
 
-            {/* Botón Agregar a Favoritos */}
             <Button 
               variant="outline" 
               className="w-full sm:w-auto self-start bg-[#FBEED7] hover:bg-[#F3E0C3] border-none text-black font-semibold flex items-center gap-2 mb-8 rounded-full px-6"
@@ -99,29 +106,24 @@ export default async function ProductPage({ params }: ProductPageProps) {
               Agregar a favoritos
             </Button>
 
-            {/* Selector de Cantidad y Agregar al Carrito */}
             <div className="flex flex-wrap items-center gap-4 mb-4">
-              <div className="flex items-center bg-white rounded-full border border-gray-300 h-11 px-2">
-                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-gray-600">
-                  <Minus className="h-4 w-4" />
-                </Button>
-                <span className="w-10 text-center font-bold text-gray-900">1</span>
-                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-gray-600">
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
+              <QuantitySelector stock={product.stock} />
 
-              <Button className="flex-1 min-w-[200px] h-11 bg-[#801010] hover:bg-[#680d0d] text-white font-bold rounded-full transition-colors">
-                Agregar al carrito
+              <Button
+                className="flex-1 min-w-[200px] h-11 bg-[#801010] hover:bg-[#680d0d] text-white font-bold rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={outOfStock}
+              >
+                {outOfStock ? "Agotado" : "Agregar al carrito"}
               </Button>
             </div>
 
-            {/* Botón Comprar Ahora */}
-            <Button className="w-full h-11 bg-[#801010] hover:bg-[#680d0d] text-white font-bold rounded-full transition-colors mb-8">
-              Comprar Ahora
+            <Button
+              className="w-full h-11 bg-[#801010] hover:bg-[#680d0d] text-white font-bold rounded-full transition-colors mb-8 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={outOfStock}
+            >
+              {outOfStock ? "No disponible" : "Comprar Ahora"}
             </Button>
 
-            {/* Menú Desplegable de Descripción */}
             <Accordion type="single" collapsible className="w-full border-t border-gray-300">
               <AccordionItem value="description" className="border-b border-gray-300">
                 <AccordionTrigger className="text-base font-bold text-gray-900 hover:no-underline py-4">
