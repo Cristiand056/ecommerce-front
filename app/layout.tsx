@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,13 +28,16 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html
-        lang="en"
+        lang="es" // 🇨🇴 Cambiado a español para mejorar el SEO y accesibilidad de tu proyecto SENA
         className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-      >
-        <body className="min-h-full flex flex-col">
-          <Header/>
-          {children}
-
+      >     
+        <body className="min-h-screen flex flex-col bg-brand-cream text-gray-900">
+          <Header />
+          <main className="flex-grow">
+            {children}
+          </main>
+          
+          <Footer />
         </body>
       </html>
     </ClerkProvider>
