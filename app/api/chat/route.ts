@@ -1,7 +1,24 @@
-// app/api/chat/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
 const CHATBOT_API_URL = process.env.CHATBOT_API_URL || "http://localhost:8000";
+
+const INTENT_ROUTES: Record<string, string> = {
+  "consulta_licores": "/catalogo",
+  "consulta_cigarrillos": "/catalogo",
+  "consulta_dulces": "/catalogo",
+  "consulta_delicatessen": "/catalogo",
+  "hacer_pedido": "/catalogo",
+  "pedido_personalizado": "/pedido-especial",
+  "crear_peticion": "/mi-cuenta",
+  "registro": "/sign-up",
+  "recuperar_contrasena": "/sign-in"
+};
+
+interface ChatbotBackendResponse {
+  reply: string;
+  intent: string;
+  confidence: number;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,8 +41,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const data = await response.json();
-    return NextResponse.json(data);
+    const data: ChatbotBackendResponse = await response.json();
+
+    const route = INTENT_ROUTES[data.intent] || undefined;
+
+    return NextResponse.json({
+      reply: data.reply,
+      route: route,
+    });
+
   } catch (error) {
     console.error("Error conectando con el chatbot:", error);
     return NextResponse.json(

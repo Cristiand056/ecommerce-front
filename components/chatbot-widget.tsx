@@ -1,17 +1,22 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, Bot, User } from "lucide-react";
+import { Send, Bot, User, ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 interface Message {
   role: "user" | "bot";
   text: string;
+  route?: string; 
 }
 
 export function ChatbotWidget() {
   const [messages, setMessages] = useState<Message[]>([
-    { role: "bot", text: "¡Hola! Soy el asistente virtual de Distribuidora X. ¿En qué puedo ayudarte hoy?" },
+    { 
+      role: "bot", 
+      text: "¡Hola! Soy el asistente virtual de Distribuidora X. ¿En qué puedo ayudarte hoy?" 
+    },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,7 +45,11 @@ export function ChatbotWidget() {
 
       setMessages((prev) => [
         ...prev,
-        { role: "bot", text: data.reply || "No pude procesar tu mensaje." },
+        { 
+          role: "bot", 
+          text: data.reply || "No pude procesar tu mensaje.",
+          route: data.route || undefined 
+        },
       ]);
     } catch {
       setMessages((prev) => [
@@ -83,14 +92,31 @@ export function ChatbotWidget() {
                 <Bot className="h-4 w-4 text-brand-red" />
               )}
             </div>
-            <div
-              className={`rounded-2xl px-4 py-2.5 text-sm max-w-[75%] shadow-sm leading-relaxed ${
-                msg.role === "user"
-                  ? "bg-brand-red text-brand-cream rounded-tr-none"
-                  : "bg-brand-cream-dark/60 text-gray-800 border border-brand-cream-dark rounded-tl-none"
-              }`}
-            >
-              {msg.text}
+
+            <div className="flex flex-col gap-1.5 max-w-[75%]">
+              <div
+                className={`rounded-2xl px-4 py-2.5 text-sm shadow-sm leading-relaxed ${
+                  msg.role === "user"
+                    ? "bg-brand-red text-brand-cream rounded-tr-none"
+                    : "bg-brand-cream-dark/60 text-gray-800 border border-brand-cream-dark rounded-tl-none"
+                }`}
+              >
+                {msg.text}
+              </div>
+
+              {msg.role === "bot" && msg.route && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="self-start mt-0.5 border-brand-red text-brand-red hover:bg-brand-red hover:text-brand-cream font-medium rounded-xl text-xs gap-1 py-1 h-auto shadow-sm transition-all animate-in fade-in zoom-in-95 duration-200"
+                  asChild
+                >
+                  <Link href={msg.route}>
+                    Ir a la sección aquí
+                    <ArrowRight className="h-3 w-3" />
+                  </Link>
+                </Button>
+              )}
             </div>
           </div>
         ))}
