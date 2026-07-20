@@ -1,6 +1,7 @@
 // app/catalogo/page.tsx
 import Link from "next/link";
 import { ChevronRight, Filter, SlidersHorizontal } from "lucide-react";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -89,11 +90,22 @@ export default async function CatalogoPage({
 
   return (
     <main className="flex flex-col min-h-screen bg-[#FDF5E6]">
-      <section className="relative h-[200px] md:h-[300px] bg-[#801010] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#680d0d] to-[#801010] opacity-95" />
-        <div className="relative z-10 text-center text-white p-6 max-w-xl mx-auto">
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight uppercase">Licores y Delicatessen</h1>
-          <div className="w-16 h-1 bg-[#FDF5E6] mx-auto my-3 md:my-4 rounded" />
+      <section className="relative h-[200px] md:h-[300px] flex items-center justify-center overflow-hidden bg-brand-red">
+        <Image
+          src={getStrapiMedia(finalProducts[0].images?.url || "/placeholder.jpg")}
+          alt="Fondo de licores y delicatessen"
+          fill
+          priority
+          className="object-cover"
+        />
+
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-red-dark/50 to-brand-red/95 z-10" />
+
+        <div className="relative z-20 text-center text-brand-cream p-6 max-w-xl mx-auto">
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight uppercase">
+            Licores, Cigarrillos, Delicatessen y Más
+          </h1>
+          <div className="w-16 h-1 bg-brand-cream mx-auto my-3 md:my-4 rounded" />
         </div>
       </section>
 
