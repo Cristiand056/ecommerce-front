@@ -5,14 +5,12 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline{
-  /*  1. Colores corporativos de tu distribuidora */
   --color-brand-red: #801010;
   --color-brand-red-dark: #680d0d;
   --color-brand-cream: #FDF5E6;
   --color-brand-cream-dark: #f5ebd5;
   --color-brand-gold: #D4AF37;
 
-  /* ⚙️ 2. Variables del sistema Shadcn */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
