@@ -6,12 +6,12 @@ import { ShoppingCart, Menu, X, Package } from "lucide-react"
 import { useUser, UserButton } from "@clerk/nextjs"
 
 import { Button } from "./ui/button"
+import { useCart } from "./cart-context"; 
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { isSignedIn, isLoaded } = useUser()
-
-  console.log("🔑 Clerk state:", { isLoaded, isSignedIn }) // 👈 temporal
+  const { totalItems } = useCart();
 
   return (
     <header className="w-full bg-brand-red sticky top-0 z-50 border-b border-brand-red-dark">
@@ -97,13 +97,21 @@ export function Header() {
           )}
 
           {/* Carrito de Compras - Hover con texto dorado */}
-          <Button 
-            variant="outline" 
-            size="icon" 
-            className="relative rounded-full border-brand-cream/30 bg-transparent text-brand-cream hover:border-brand-gold hover:text-brand-gold hover:bg-brand-red-dark transition-all duration-200"
+          <Button
+            variant="outline"
+            size="icon"
+            className="relative rounded-full border-brand-red/20 text-brand-red hover:bg-brand-red hover:text-white           transition-all"
+            asChild
           >
-            <ShoppingCart className="h-5 w-5 text-brand-cream group-hover:text-brand-gold" />
-            <span className="sr-only">Carrito de Compras</span>
+            <Link href="/carrito">
+              <ShoppingCart className="h-5 w-5" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-brand-red text-white text-[10px] font-bold rounded-full          h-4 w-4 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+              <span className="sr-only">Carrito de Compras</span>
+            </Link>
           </Button>
         </div>
       </div>

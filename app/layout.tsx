@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { FloatingContact } from "@/components/floating-contact"
+import { CartProvider } from "@/components/cart-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,12 +35,16 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       >     
         <body className="min-h-screen flex flex-col bg-brand-cream text-gray-900">
-          <Header />
-          <main className="flex-grow">
-            {children}
-          </main>
-          <FloatingContact />
-          <Footer />
+          <CartProvider>
+            <Header />
+            <main className="flex-grow">
+              {children}
+            </main>
+            <FloatingContact />
+            <Footer />
+          </CartProvider>
+          {/* Script de Wompi para el widget de pago */}
+          <Script src="https://checkout.wompi.co/widget.js" strategy="afterInteractive" />
         </body>
       </html>
     </ClerkProvider>

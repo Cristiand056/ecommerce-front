@@ -15,7 +15,6 @@ export function QuantitySelector({
   const [quantity, setQuantity] = useState(stock > 0 ? 1 : 0);
 
   const updateQuantity = (newQty: number) => {
-    // No permite bajar de 1 ni subir más del stock disponible
     const clamped = Math.max(1, Math.min(newQty, stock));
     setQuantity(clamped);
     onChange?.(clamped);
@@ -34,7 +33,7 @@ export function QuantitySelector({
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 rounded-full text-gray-600"
+        className="h-8 w-8 rounded-full text-gray-600 hover:text-brand-red"
         onClick={() => updateQuantity(quantity - 1)}
         disabled={quantity <= 1}
       >
@@ -44,7 +43,7 @@ export function QuantitySelector({
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 rounded-full text-gray-600"
+        className="h-8 w-8 rounded-full text-gray-600 hover:text-brand-red"
         onClick={() => updateQuantity(quantity + 1)}
         disabled={quantity >= stock}
       >

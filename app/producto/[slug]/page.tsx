@@ -6,7 +6,7 @@ import { ChevronRight, Heart } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { QuantitySelector } from "@/components/quantity-selector";
+import { ProductActions } from "@/components/product-actions";
 import { getProducts, getStrapiMedia } from "@/lib/strapi";
 
 interface ProductPageProps {
@@ -15,7 +15,6 @@ interface ProductPageProps {
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-
   const prod = await getProducts({ slug });
 
   if (!prod) {
@@ -23,11 +22,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   const product = {
+    id: prod.id,
+    documentId: prod.documentId,
+    slug: prod.slug,
     title: prod.name || "Producto sin nombre",
     price: prod.price || 0,
-    stock: prod.stock ?? 0, // ✅ nuevo
+    stock: prod.stock ?? 0,
     imageSrc: getStrapiMedia(prod.image),
     description: prod.description || "Sin descripción disponible.",
+    categorySlug: prod.category?.slug,
   };
 
   const formatPrice = (value: number) => {
@@ -38,10 +41,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
     }).format(value);
   };
 
+  // 👇 Aquí se calcula outOfStock: es simplemente "el stock es 0 o menos"
   const outOfStock = product.stock <= 0;
 
   return (
-    <main className="min-h-screen bg-[#FDF5E6] py-8 px-4 md:px-6">
+    <main className="min-h-screen bg-brand-cream py-8 px-4 md:px-6">
       <div className="container max-w-5xl mx-auto">
         
         <nav className="flex items-center text-sm font-bold text-gray-800 mb-6">
@@ -91,7 +95,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               {formatPrice(product.price)}
             </p>
 
-            {/* ✅ Indicador de stock */}
+            {/* 👇 outOfStock también se usa aquí, para el mensaje de disponibilidad */}
             <p className={`text-xs font-semibold mb-6 ${outOfStock ? "text-red-600" : "text-gray-700"}`}>
               {outOfStock
                 ? "Producto agotado"
@@ -106,23 +110,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
               Agregar a favoritos
             </Button>
 
-            <div className="flex flex-wrap items-center gap-4 mb-4">
-              <QuantitySelector stock={product.stock} />
-
-              <Button
-                className="flex-1 min-w-[200px] h-11 bg-[#801010] hover:bg-[#680d0d] text-white font-bold rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={outOfStock}
-              >
-                {outOfStock ? "Agotado" : "Agregar al carrito"}
-              </Button>
-            </div>
-
-            <Button
-              className="w-full h-11 bg-[#801010] hover:bg-[#680d0d] text-white font-bold rounded-full transition-colors mb-8 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={outOfStock}
-            >
-              {outOfStock ? "No disponible" : "Comprar Ahora"}
-            </Button>
+            {/* 👇 y se le pasa como prop a ProductActions */}
+            <ProductActions product={product} outOfStock={outOfStock} />
 
             <Accordion type="single" collapsible className="w-full border-t border-gray-300">
               <AccordionItem value="description" className="border-b border-gray-300">

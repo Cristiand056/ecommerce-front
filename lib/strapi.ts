@@ -129,3 +129,136 @@ export function getStrapiMedia(media: any): string {
   if (url.startsWith("http://") || url.startsWith("https://")) return url;
   return `${STRAPI_URL}${url}`;
 }
+
+{/*Actualizar número de productos y comprobar el pago*/}
+const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
+
+async function fetchStrapiAuth(endpoint: string, options: RequestInit = {}) {
+  try {
+    const response = await fetch(`${STRAPI_URL}/api/${endpoint}`, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+        ...options.headers,
+      },
+    });
+    if (!response.ok) {
+      const errBody = await response.text();
+      console.warn(`⚠️ Strapi (auth) respondió ${response.status}: ${errBody}`); // 👈 ya lo tenías, revisa que esté
+      return null;
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Error de conexión con Strapi (auth):`, error);
+    return null;
+  }
+}
+
+interface OrderItem {
+  productId: number;
+  productDocumentId: string;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+interface CreateOrderInput {
+  orderNumber: string;
+  items: OrderItem[];
+  total: number;
+  subtotal: number;
+  userId: string;
+  userEmail: string;
+  customerNumber: string;
+  shippingAddress: string;
+  haveLicorTheOrder: boolean;
+  CC?: string;
+}
+
+export async function createOrder(order: CreateOrderInput) {
+  console.log("📝 Intentando crear orden con estos datos:", JSON.stringify(order, null, 2)); // 👈 temporal
+
+  const result = await fetchStrapiAuth("orders", {
+    method: "POST",
+    body: JSON.stringify({
+      data: {
+        orderNumber: order.orderNumber,
+        items: order.items,
+        total: order.total,
+        subtotal: order.subtotal,
+        statusOrder: "pending",
+        userId: order.userId,
+        userEmail: order.userEmail,
+        customerNumber: order.customerNumber,
+        shippingAddress: order.shippingAddress,
+        haveLicorTheOrder: order.haveLicorTheOrder,
+        CC: order.CC || null,
+      },
+    }),
+  });
+
+  console.log("📝 Resultado de crear orden:", result); // 👈 temporal
+  return result;
+}
+
+export async function getOrderByReference(orderNumber: string) {
+  const res = await fetchStrapiAuth(`orders?filters[orderNumber][$eq]=${orderNumber}`);
+  const data = res?.data;
+  return Array.isArray(data) && data.length > 0 ? data[0] : null;
+}
+
+export async function updateOrderStatus(
+  orderDocumentId: string,
+  statusOrder: "pending" | "processing" | "shipping" | "delivered" | "canceled",
+  paymentIntentId?: string
+) {
+  return fetchStrapiAuth(`orders/${orderDocumentId}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      data: { statusOrder, ...(paymentIntentId ? { paymentIntentId } : {}) },
+    }),
+  });
+}
+
+export async function decrementProductStock(productDocumentId: string, quantitySold: number) {
+  const res = await fetchStrapiAuth(`products/${productDocumentId}`);
+  const currentStock = res?.data?.stock ?? 0;
+  const newStock = Math.max(0, currentStock - quantitySold);
+  return fetchStrapiAuth(`products/${productDocumentId}`, {
+    method: "PUT",
+    body: JSON.stringify({ data: { stock: newStock } }),
+  });
+}
+
+export async function getOrdersByUser(userId: string) {
+  const res = await fetchStrapiAuth(`orders?filters[userId][$eq]=${userId}&sort=createdAt:desc`);
+  return res?.data || [];
+}
+
+{/*Promociones */}
+export async function getFeaturedProducts(limit: number = 6) {
+  const endpoint = `products?filters[featured][$eq]=true&filters[originalPrice][$notNull]=true&populate=image&populate=category&pagination[pageSize]=${limit}`;
+  const res = await fetchStrapi(endpoint, { next: { revalidate: 120 } });
+
+  if (!res || !Array.isArray(res.data)) return [];
+
+  return res.data.map((prod: any) => ({
+    id: prod.id,
+    slug: prod.slug,
+    name: prod.name || "Producto sin nombre",
+    subcategory: prod.subcategory || prod.category?.name || "",
+    originalPrice: prod.originalPrice,
+    price: prod.price,
+    imageUrl: getStrapiMedia(prod.image),
+    badge: `${Math.round(((prod.originalPrice - prod.price) / prod.originalPrice) * 100)}% OFF`,
+    color: CATEGORY_COLORS[prod.category?.slug] || "#801010",
+  }));
+}
+
+const CATEGORY_COLORS: Record<string, string> = {
+  licores: "#C9A84C",
+  cigarrillos: "#8B1A1A",
+  delicatessen: "#2D9B6F",
+  dulces: "#6B3A2A",
+};
